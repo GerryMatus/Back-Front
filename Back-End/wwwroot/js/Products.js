@@ -7,7 +7,7 @@ function CargaTabla() {
     $('#tabla-products').find("thead").hide();
 
     $.ajax({
-        url: "../productos/", // Cambia la URL si es necesario
+        url: "../productos/",
         method: "GET",
         dataType: "json"
     })
@@ -17,19 +17,15 @@ function CargaTabla() {
                 $("#tabla-products").find("tbody").html("");
 
                 $.each(data, function (index, product) {
-                    // Genera el HTML para las imágenes
                     var imagesHtml = '';
                     if (product.images && product.images.length > 0) {
                         $.each(product.images, function (i, image) {
-                            // Limpia la URL de la imagen para eliminar caracteres de escape y comillas
                             const cleanedImage = image.replace(/^\["|"\]$/g, '').replace(/\\+/g, '');
                             imagesHtml += `<img src="${cleanedImage}" width="50" height="50" style="margin-right:5px;"/>`;
                         });
                     } else {
                         imagesHtml = "No image available";
                     }
-
-                    // Agrega la fila a la tabla con las imágenes y el botón de edición
                     var row = `
                 <tr>
                     <td>${product.title}</td>
@@ -62,8 +58,6 @@ function CargaTabla() {
             $("#tabla-products").find("tbody").html("<tr><td colspan='5'>Error al cargar los productos.</td></tr>");
         });
 }
-
-// Nueva función para filtrar productos
 function filterProducts() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const filteredProducts = [];
@@ -71,24 +65,22 @@ function filterProducts() {
     $("#tabla-products tbody tr").each(function () {
         const productTitle = $(this).find('td').eq(0).text().toLowerCase();
         if (productTitle.includes(searchTerm)) {
-            filteredProducts.push(this); // Agrega la fila que coincide
+            filteredProducts.push(this);
         }
     });
 
-    $("#tabla-products tbody tr").hide(); // Oculta todas las filas
-    $(filteredProducts).show(); // Muestra solo las filas que coinciden
+    $("#tabla-products tbody tr").hide();
+    $(filteredProducts).show();
 }
 
 function btnView(id) {
-    // Realiza una nueva llamada AJAX para obtener los datos del producto específico
     $.ajax({
-        url: `../productos/${id}`, // Cambia la URL si es necesario
+        url: `../productos/${id}`,
         method: "GET",
         dataType: "json"
     })
         .done(function (data) {
             if (data) {
-                // Limpia el contenido previo de la modal
                 const modalBody = `
                 <div><strong>Producto:</strong></div>
                 <div id="product-carousel" class="carousel slide" data-bs-ride="carousel">
@@ -109,20 +101,15 @@ function btnView(id) {
                 </div>
             `;
 
-                // Inserta el contenido en la modal
                 $(".modal-body").html(modalBody);
 
-                // Limpiar las imágenes previas
                 $('#product-images').html('');
 
-                // Agregar imágenes al carrusel
                 if (data.images && data.images.length > 0) {
                     $.each(data.images, function (i, image) {
-                        // Limpiar la imagen de comillas y barras invertidas
                         const cleanedImage = image.replace(/^\["|"\]$/g, '').replace(/\\+/g, '');
 
-                        // Crear la estructura del carrusel
-                        const isActive = (i === 0) ? 'active' : ''; // La primera imagen es activa
+                        const isActive = (i === 0) ? 'active' : '';
                         $('#product-images').append(`
                             <div class="carousel-item ${isActive}">
                                 <img src="${cleanedImage}" class="d-block w-100" alt="Imagen del producto" style="height: 300px; object-fit: cover;">
@@ -145,21 +132,17 @@ function btnView(id) {
 
 async function btnEdit(id) {
     try {
-        // 1. Obtener los datos actuales del producto
         const response = await fetch(`../productos/${id}`);
         const productData = await response.json();
 
-        // 2. Llenar el formulario con los datos actuales del producto
         document.getElementById("productId").value = productData.id;
         document.getElementById("productTitle").value = productData.title;
         document.getElementById("productDescription").value = productData.description;
         document.getElementById("productPrice").value = productData.price;
 
-        // 3. Abrir el modal de edición
         const editModal = new bootstrap.Modal(document.getElementById("editModal"));
         editModal.show();
 
-        // Agregar listener para el botón de guardar solo después de cargar los datos
         document.getElementById("saveProductBtn").onclick = function () {
             saveEditedProduct(id);
         };
@@ -176,24 +159,18 @@ async function saveEditedProduct(id) {
     formData.append("file", imageFile);
 
     try {
-        // 1. Subimos la imagen
         const uploadResponse = await fetch('../productos/upload', {
             method: 'POST',
             body: formData
         });
 
         const uploadResult = await uploadResponse.json();
-
-        // Verificamos si la URL de la imagen (location) existe en la respuesta
         if (!uploadResult.location) {
             alert("Error: La respuesta del servidor no contiene la ubicación de la imagen.");
             return;
         }
-
-        // Limpiamos los caracteres especiales en la URL de la imagen
         const cleanImageUrl = uploadResult.location.replace(/["\\[\]]/g, '');
 
-        // 2. Preparamos los datos para editar el producto
         const editedProduct = {
             id: id,
             title: document.getElementById("productTitle").value,
@@ -204,7 +181,6 @@ async function saveEditedProduct(id) {
 
         console.log(editedProduct);
 
-        // 3. Enviamos la solicitud de edición del producto usando jQuery AJAX
         $.ajax({
             url: `../productos/${id}`,
             type: 'PUT',
@@ -300,14 +276,12 @@ async function fetchCategories() {
         const categories = await response.json();
         const categorySelect = document.getElementById("categoryId");
 
-        // Limpia las opciones existentes
         categorySelect.innerHTML = '<option value="">Seleccione una categoría</option>';
 
-        // Llena el select con las categorías
         categories.forEach(category => {
             const option = document.createElement("option");
-            option.value = category.id; // El ID de la categoría
-            option.textContent = category.name; // El nombre de la categoría
+            option.value = category.id;
+            option.textContent = category.name;
             categorySelect.appendChild(option);
         });
     } catch (error) {
@@ -316,5 +290,4 @@ async function fetchCategories() {
     }
 }
 
-// Llama a fetchCategories cuando se abra el modal
 document.getElementById("altaModal").addEventListener('show.bs.modal', fetchCategories);

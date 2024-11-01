@@ -24,9 +24,9 @@ namespace Back_End.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var productos = await response.Content.ReadFromJsonAsync<List<Producto>>();
-                return Json(productos); // Devuelve la lista de productos como JSON
+                return Json(productos);
             }
-            return Json(new List<Producto>()); // Retorna una lista vacía si hay un error
+            return Json(new List<Producto>());
         }
 
         // GET: /productos/{id}
@@ -59,7 +59,6 @@ namespace Back_End.Controllers
                 return BadRequest("Los campos Title, Price y Description son obligatorios.");
             }
 
-            // Aquí asegúrate de que las imágenes se envían correctamente
             var response = await _httpClient.PostAsJsonAsync("products", producto);
             if (response.IsSuccessStatusCode)
             {
