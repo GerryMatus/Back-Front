@@ -1,0 +1,131 @@
+﻿@page
+@model Back_End.Pages.ProductsModel
+@{
+}
+<h1>Página de productos del usuario</h1>
+<p>Esta es una tabla con tus productos que tienes actualmente</p>
+<table class="table table-hover mt-2" id="tabla-products">
+    <div><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#altaModal"><i class="fa fas-more"></i>Agregar producto</button></div>
+
+    <!-- Campo de búsqueda -->
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar por título..." onkeyup="filterProducts()">
+    </div>
+
+    <thead>
+        <tr class="table-info bg-opacity-50 text-center">
+            <th scope="col">Title</th>
+            <th scope="col">Price</th>
+            <th scope="col">Description</th>
+            <th scope="col">Images</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<!-- Modal de visualizar producto-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Detalles del producto</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="#datos">
+                <!--Datos de la vista-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de editar producto-->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Editar Producto</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editProductForm">
+                    <input type="hidden" id="productId" name="productId">
+                    <div class="mb-3">
+                        <label for="productTitle" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="productTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productDescription" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="productDescription" name="description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productPrice" class="form-label">Precio</label>
+                        <input type="number" class="form-control" id="productPrice" name="price" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productImage" class="form-label">Subir Imagen</label>
+                        <input type="file" class="form-control" id="productImage" name="file" accept="image/*" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="saveProductBtn">Guardar Producto</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal de alta producto-->
+<div class="modal fade" id="altaModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Alta Producto</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editProductForm">
+                    <div class="mb-3">
+                        <label for="productTitle" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="productTitlea" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productDescription" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="productDescriptiona" name="description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productPrice" class="form-label">Precio</label>
+                        <input type="number" class="form-control" id="productPricea" name="price" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoryId" class="form-label">Categoría</label>
+                        <select class="form-control" id="categoryId" name="categoryId" required>
+                            <option value="">Seleccione una categoría</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productImage" class="form-label">Subir Imagen</label>
+                        <input type="file" class="form-control" id="productImagea" name="file" accept="image/*" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="addProductBtn" onclick="saveNewProduct()">Guardar Producto</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
