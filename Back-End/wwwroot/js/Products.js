@@ -120,7 +120,6 @@ function btnView(id) {
                     $('#product-images').append("<p>No images available</p>");
                 }
 
-                // Muestra la modal
                 $('#exampleModal').modal('show');
             }
         })
@@ -216,10 +215,9 @@ async function saveNewProduct() {
     formData.append("title", document.getElementById("productTitlea").value);
     formData.append("description", document.getElementById("productDescriptiona").value);
     formData.append("price", parseFloat(document.getElementById("productPricea").value));
-    formData.append("categoryId", categoryId); // Agrega el ID de la categoría
+    formData.append("categoryId", categoryId);
 
     try {
-        // 1. Subimos la imagen
         const uploadResponse = await fetch('../productos/upload', {
             method: 'POST',
             body: formData
@@ -227,25 +225,21 @@ async function saveNewProduct() {
 
         const uploadResult = await uploadResponse.json();
 
-        // Verificamos si la URL de la imagen (location) existe en la respuesta
         if (!uploadResult.location) {
             alert("Error: La respuesta del servidor no contiene la ubicación de la imagen.");
             return;
         }
 
-        // Limpiamos los caracteres especiales en la URL de la imagen
         const cleanImageUrl = uploadResult.location.replace(/["\\[\]]/g, '');
 
-        // 2. Preparamos los datos para crear el nuevo producto
         const newProduct = {
             title: document.getElementById("productTitlea").value,
             description: document.getElementById("productDescriptiona").value,
             price: parseFloat(document.getElementById("productPricea").value),
             images: [cleanImageUrl],
-            categoryId: categoryId // Aquí agregas el ID de la categoría
+            categoryId: categoryId
         };
 
-        // 3. Enviamos la solicitud para guardar el nuevo producto
         const response = await fetch('../productos', {
             method: 'POST',
             headers: {
@@ -259,7 +253,7 @@ async function saveNewProduct() {
         }
 
         alert("Producto guardado exitosamente");
-        window.location.reload(); // Recarga la página después de guardar
+        window.location.reload();
 
     } catch (error) {
         console.error("Error:", error);
